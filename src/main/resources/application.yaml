@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: hackathon
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kyc_db
+    username: kyc_user
+    password: kyc_password
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update # Génère le schéma automatiquement pour le Hackathon
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+  session:
+    store-type: redis # Rend les sessions HTTP stateless côté application web
+    redis:
+      flush-mode: on_save
+      namespace: spring:session:kyc
+
+server:
+  port: 8080
