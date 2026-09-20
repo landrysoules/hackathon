@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<aside th:fragment="sidebar" style="width: 280px; min-width: 280px; border-right: 1px solid var(--muted-border-color); padding: 1.5rem;">
+    <h3 style="margin-bottom: 2rem;">AML / KYC</h3>
+
+    <nav>
+        <ul>
+            <!-- Entrée 1 : L'écran initial de vérification -->
+            <li>
+                <a href="#"
+                   hx-get="/pages/entity-scan"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML"
+                   hx-push-url="/entity-scan">
+                    🔍 Vérification Entité
+                </a>
+            </li>
+            <!-- Entrée 2 : Listes PEP / Sanctions -->
+            <li>
+                <a href="#"
+                   hx-get="/pages/pep-sanctions"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML"
+                   hx-push-url="/pep-sanctions">
+                    🛡️ Listes & Sanctions
+                </a>
+            </li>
+            <!-- Entrée 3 : Alertes & Transactions -->
+            <li>
+                <a href="#"
+                   hx-get="/pages/transactions"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML"
+                   hx-push-url="/transactions">
+                    💳 Monitoring Flux
+                </a>
+            </li>
+            <!-- Entrée 4 : Audit & Sessions -->
+            <li>
+                <a href="#"
+                   hx-get="/pages/audit-logs"
+                   hx-target="#main-content"
+                   hx-swap="innerHTML"
+                   hx-push-url="/audit-logs">
+                    📑 Audit & Journal
+                </a>
+            </li>
+        </ul>
+    </nav>
+</aside>
+</html>

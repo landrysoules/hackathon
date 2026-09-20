@@ -1,82 +1,19 @@
 <!DOCTYPE html>
 <html lang="fr" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AML/KYC Compliance Dashboard</title>
-
-    <!-- Pico CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-
-    <!-- HTMX -->
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-
-    <!-- AlpineJS -->
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.13.3/dist/cdn.min.js"></script>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    document.body.addEventListener('htmx:configRequest', (event) => {
-    const csrfHeaderName = document.querySelector("meta[name='_csrf_header']").getAttribute("content");
-    const csrfToken = document.querySelector("meta[name='_csrf']").getAttribute("content");
-    if (csrfHeaderName && csrfToken) {
-    event.detail.headers[csrfHeaderName] = csrfToken;
-    }
-    });
+<head th:replace="~{fragments/head :: common-head('AML/KYC Dashboard')}">
 </head>
-<body class="container" style="padding-top: 2rem;">
+<body style="min-height: 100vh; margin: 0;">
 
-<nav>
-    <ul>
-        <li><strong>🛡️ AML/KYC Screening System</strong></li>
-    </ul>
-    <ul>
-        <li><span th:text="${userRole}" class="outline" role="button">Role</span></li>
-    </ul>
-</nav>
+<div style="display: flex; min-height: 100vh;">
+    <!-- 1. Menu latéral -->
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
 
-<main>
-    <article x-data="{ openDetails: false, entityId: 'ENT-9842' }">
-        <header style="display: flex; justify-content: space-between; align-items: center;">
-            <span>Dossier de Vérification Client</span>
-            <small style="font-family: monospace;">Redis Session ID: <span th:text="${sessionId}"></span></small>
-        </header>
-
-        <div class="grid">
-            <div>
-                <label for="entity">Identifiant Entité / Entreprise :</label>
-                <input type="text" id="entity" x-model="entityId" placeholder="ex: ENT-9842">
-            </div>
-        </div>
-
-        <!-- Interactions Hybrides Alpine + HTMX -->
-        <div style="margin-top: 1rem;">
-            <button @click="openDetails = !openDetails" class="secondary outline" style="width: auto; display: inline-block;">
-                <span x-text="openDetails ? 'Masquer Détails Client' : 'Afficher Détails Client'"></span>
-            </button>
-
-            <!-- Bouton HTMX déclenchant un scan backend -->
-            <button :hx-get="'/api/kyc-check?entityId=' + entityId"
-                    hx-target="#screening-result"
-                    hx-indicator="#loading-spinner"
-                    style="width: auto; display: inline-block;">
-                Lancer l'Analyse AML
-            </button>
-        </div>
-
-        <!-- Toggle local Alpine.js -->
-        <div x-show="openDetails" x-transition style="margin-top: 1.5rem; padding: 1rem; background: rgba(0,0,0,0.03); border-radius: 8px;">
-            <p><strong>Métadonnées Session :</strong> Stockées de manière transparente dans Redis key namespace <code>spring:session:kyc</code>.</p>
-        </div>
-
-        <!-- Indicateur de chargement HTMX -->
-        <div id="loading-spinner" class="htmx-indicator" style="margin-top: 1rem;"aria-busy="true">
-            Analyse des listes de sanctions en cours...
-        </div>
-
-        <!-- Cible du retour HTML de HTMX -->
-        <div id="screening-result" style="margin-top: 1rem;"></div>
-    </article>
-</main>
+    <!-- 2. Zone principale dynamique ciblée par HTMX -->
+    <main id="main-content" style="flex: 1; padding: 2rem;">
+        <!-- Affichage de la page 1 par défaut au premier chargement -->
+        <div th:replace="~{pages/entity-scan :: content}"></div>
+    </main>
+</div>
 
 </body>
 </html>

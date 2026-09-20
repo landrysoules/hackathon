@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<!-- Le fragment complet de la page -->
+<div th:fragment="content">
+    <h2>Vérification de l'entité</h2>
+
+    <form hx-post="/pages/entity-scan/scan"
+          hx-target="#kyc-result"
+          hx-swap="innerHTML">
+
+        <label for="entityName">Nom de l'entité ou personne à analyser :</label>
+        <input type="text" id="entityName" name="entityName" placeholder="Ex: Acme Corp ou John Doe" required>
+
+        <button type="submit">Lancer le scan de conformité</button>
+    </form>
+
+    <!-- Zone où s'insèrera le fragment de résultat renvoyé par le serveur -->
+    <div id="kyc-result" style="margin-top: 1.5rem;"></div>
+</div>
+
+<!-- Le sous-fragment retourné spécifiquement par EntityScanController -->
+<div th:fragment="scan-result">
+    <article th:if="${scanResult != null}">
+        <header>
+            <strong>Résultat d'analyse : </strong>
+            <span th:text="${scanResult.entityName}">Nom de l'entité</span>
+        </header>
+
+        <p>
+            <strong>Statut : </strong>
+            <span th:text="${scanResult.status}"
+                  th:style="${scanResult.sanctionsFound ? 'color: red;' : 'color: green;'}">
+                STATUT
+            </span>
+        </p>
+
+        <p>
+            <strong>Score de risque : </strong>
+            <span th:text="${scanResult.riskScore} + ' / 100'">15 / 100</span>
+        </p>
+
+        <p th:if="${scanResult.sanctionsFound}" style="color: var(--pico-color-red-500, red);">
+            ⚠️ <strong>Alerte :</strong> Correspondance positive trouvée sur les listes de sanctions.
+        </p>
+        <p th:unless="${scanResult.sanctionsFound}">
+            ✅ Aucune sanction détectée (listes OFAC, ONU, UE vérifiées).
+        </p>
+    </article>
+</div>
+
+</html>
